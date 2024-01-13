@@ -121,5 +121,57 @@ public class DBBroker {
         
         return false;
     }
+
+    public boolean sinhronizujTabelu(List<Nastavnik> lista) throws SQLException {
+            List<Nastavnik> sviNastavniciPreSinh = vratiNastavnike();
+        
+            try {
+                String upitUpdate = "UPDATE nastavnik SET ime = ?, prezime = ?, zvanje_id = ? WHERE id = ?";
+                PreparedStatement psUpdate = Konekcija.getInstance().getConnection().prepareStatement(upitUpdate);
+                
+                String upitInsert = "INSERT INTO nastavnik (ime, prezime, zvanje_id) VALUES (?, ?, ?)";
+                PreparedStatement psInsert = Konekcija.getInstance().getConnection().prepareStatement(upitInsert);
+                
+                String upitDelete = "DELETE FROM nastavnik WHERE ID = ?";
+                PreparedStatement psDelete = Konekcija.getInstance().getConnection().prepareStatement(upitDelete);
+                
+                for (Nastavnik nastavnik : lista) {
+                    if(nastavnik.getId() != 0) {
+                        psUpdate.setString(1, nastavnik.getIme());
+                        psUpdate.setString(2, nastavnik.getPrezime());
+                        psUpdate.setInt(3, nastavnik.getZvanje().getId());
+                        psUpdate.setInt(4, nastavnik.getId());
+
+                        psUpdate.addBatch();
+                    } else {
+                        psInsert.setString(1, nastavnik.getIme());
+                        psInsert.setString(2, nastavnik.getPrezime());
+                        psInsert.setInt(3, nastavnik.getZvanje().getId());
+                        
+                        psInsert.addBatch();
+                    }
+                }
+                
+                for (Nastavnik nastavnik : sviNastavniciPreSinh) {
+                    if(!lista.contains(nastavnik)) {
+                        psDelete.setInt(1, nastavnik.getId());
+                        psDelete.addBatch();
+                    }
+                }
+                
+                psUpdate.executeBatch();
+                psInsert.executeBatch();
+                psDelete.executeBatch();
+                Konekcija.getInstance().getConnection().commit();
+                return true;
+            } catch (SQLException ex) {
+                Konekcija.getInstance().getConnection().rollback();
+                Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        
+        
+        return false;
+    }
     
 }

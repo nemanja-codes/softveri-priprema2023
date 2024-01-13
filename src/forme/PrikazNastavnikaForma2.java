@@ -5,7 +5,10 @@
 package forme;
 
 import controller.Controller;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -84,6 +87,11 @@ public class PrikazNastavnikaForma2 extends javax.swing.JFrame {
         });
 
         btnSinhronizuj.setText("Sinhronizuj tabelu sa BP");
+        btnSinhronizuj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSinhronizujActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -145,6 +153,23 @@ public class PrikazNastavnikaForma2 extends javax.swing.JFrame {
         
         mtn.dodajNastavnika(n);
     }//GEN-LAST:event_btnDodajRedActionPerformed
+
+    private void btnSinhronizujActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSinhronizujActionPerformed
+       ModelTabeleNastavnik mtn = (ModelTabeleNastavnik) tblNastavnik.getModel();
+       List<Nastavnik> lista = mtn.getLista();
+       
+        try {
+            boolean uspesno = Controller.getInstance().sinhronizujTabelu(lista);
+            if(uspesno) {
+                JOptionPane.showMessageDialog(this, "USPESNO SINHRONIZOVANO");
+            } else {
+                JOptionPane.showMessageDialog(this, "GRESKA");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PrikazNastavnikaForma2.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+    }//GEN-LAST:event_btnSinhronizujActionPerformed
 
     /**
      * @param args the command line arguments

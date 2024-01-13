@@ -59,6 +59,10 @@ public class Controller {
         return dbb.azurirajNastavnika(id, ime, prezime, zvanje);
     }
 
+    public boolean sinhronizujTabelu(List<Nastavnik> lista) throws SQLException {
+        return dbb.sinhronizujTabelu(lista);
+    }
+
     
     
     
