@@ -36,6 +36,7 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
         txtPrezime.setEnabled(false);
         cmbZvanje.setSelectedItem(odabraniNastavnik.getZvanje());
         cmbZvanje.setEnabled(false);
+        btnSacuvaj.setVisible(false);
 
     }
 
@@ -55,6 +56,8 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         cmbZvanje = new javax.swing.JComboBox<>();
         btnObrisi = new javax.swing.JButton();
+        btnOmoguci = new javax.swing.JButton();
+        btnSacuvaj = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -71,14 +74,27 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
             }
         });
 
+        btnOmoguci.setText("Omoguci izmenu");
+        btnOmoguci.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOmoguciActionPerformed(evt);
+            }
+        });
+
+        btnSacuvaj.setText("Sacuvaj");
+        btnSacuvaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSacuvajActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnObrisi)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3)
@@ -88,8 +104,14 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtIme)
                             .addComponent(txtPrezime)
-                            .addComponent(cmbZvanje, 0, 251, Short.MAX_VALUE))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                            .addComponent(cmbZvanje, 0, 251, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnSacuvaj)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnOmoguci)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnObrisi)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,7 +129,10 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(cmbZvanje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnObrisi)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnObrisi)
+                    .addComponent(btnOmoguci)
+                    .addComponent(btnSacuvaj))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -132,12 +157,56 @@ public class DetaljiNastavnikForma extends javax.swing.JDialog {
        }
     }//GEN-LAST:event_btnObrisiActionPerformed
 
+    private void btnOmoguciActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOmoguciActionPerformed
+        txtIme.setEnabled(true);
+        txtPrezime.setEnabled(true);
+        cmbZvanje.setEnabled(true);
+        btnSacuvaj.setVisible(true);
+    }//GEN-LAST:event_btnOmoguciActionPerformed
+
+    private void btnSacuvajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajActionPerformed
+        try {
+            String ime = txtIme.getText();
+            String prezime = txtPrezime.getText();
+            Zvanje zvanje = (Zvanje) cmbZvanje.getSelectedItem();
+            int id = odabraniNastavnik.getId();
+            if(ime == null  || ime.isEmpty()  || prezime == null || prezime.isEmpty() || zvanje == null) {
+                JOptionPane.showMessageDialog(this, "Sva polju su obavezna!", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(ime.length() > 100 || prezime.length() > 100) {
+                JOptionPane.showMessageDialog(this, "Predugacko ime ili prezime", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            //[A-Za-z]+
+            if(!ime.matches("[A-Za-z]+") || !prezime.matches("[A-Za-z]+")) {
+                JOptionPane.showMessageDialog(this, "Nisu svi karakteri slova u imenu ili prezimenu!", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            boolean uspesno = Controller.getInstance().azurirajNastavnika(id, ime, prezime, zvanje);
+            if(uspesno) {
+                JOptionPane.showMessageDialog(this, "Uspesno azurirano");
+            } else {
+                JOptionPane.showMessageDialog(this, "Greska pri azuriranju");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DetaljiNastavnikForma.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        roditelj.osveziTabelu();
+        this.dispose();
+            
+    }//GEN-LAST:event_btnSacuvajActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnObrisi;
+    private javax.swing.JButton btnOmoguci;
+    private javax.swing.JButton btnSacuvaj;
     private javax.swing.JComboBox<Zvanje> cmbZvanje;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

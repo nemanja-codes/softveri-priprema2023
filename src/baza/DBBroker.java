@@ -99,5 +99,27 @@ public class DBBroker {
         }
         return false;
     }
+
+    public boolean azurirajNastavnika(int id, String ime, String prezime, Zvanje zvanje) throws SQLException {
+        String upit = "UPDATE nastavnik SET ime = ?, prezime = ?, zvanje_id = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = Konekcija.getInstance().getConnection().prepareStatement(upit);
+            ps.setString(1, ime);
+            ps.setString(2, prezime);
+            ps.setInt(3, zvanje.getId());
+            ps.setInt(4, id);
+            
+            ps.executeUpdate();
+            Konekcija.getInstance().getConnection().commit();
+            return true;
+        } catch (SQLException ex) {
+            Konekcija.getInstance().getConnection().rollback();
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        return false;
+    }
     
 }

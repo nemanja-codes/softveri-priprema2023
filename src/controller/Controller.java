@@ -55,6 +55,10 @@ public class Controller {
         return dbb.obrisiNastavnika(id);
     }
 
+    public boolean azurirajNastavnika(int id, String ime, String prezime, Zvanje zvanje) throws SQLException {
+        return dbb.azurirajNastavnika(id, ime, prezime, zvanje);
+    }
+
     
     
     
