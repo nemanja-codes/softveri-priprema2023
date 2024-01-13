@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import model.Nastavnik;
+import model.Zvanje;
 
 /**
  *
@@ -46,6 +47,7 @@ public class ModelTabeleNastavnik extends AbstractTableModel {
                 case 1:
                     return n.getPrezime();
                 case 2:
+                    if(n.getZvanje() == null) return null;
                     return n.getZvanje().getNaziv();
                 default:
                     return "N/A";
@@ -64,6 +66,46 @@ public class ModelTabeleNastavnik extends AbstractTableModel {
     public void setLista(List<Nastavnik> lista) {
         this.lista = lista;
     }
+
+    void obrisiNastavnika(int selektovaniRed) {
+        lista.remove(selektovaniRed);
+        fireTableDataChanged();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        Nastavnik n = lista.get(rowIndex);
+        if(n.getZvanje() != null && n.getZvanje().getNaziv().equals("redovni profesor") && (columnIndex == 0  || columnIndex == 1)) {
+            return true;
+        } else if(n.getZvanje() == null) {   //DODAT USLOV
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        Nastavnik n = lista.get(rowIndex);
+        switch (columnIndex) {
+            case 0:
+                n.setIme((String) aValue);
+                break;
+            case 1:
+                n.setPrezime((String) aValue);
+                break;
+                //ovo iznad sam koristio za prvu formu IZMENI, sva tri case-a koristim za drugu formu i opciju DODAJ RED
+            case 2:
+                n.setZvanje((Zvanje) aValue);
+                break;
+        }
+    }
+
+    void dodajNastavnika(Nastavnik n) {
+        lista.add(n);
+        fireTableDataChanged();
+    }
+    
+    
     
     
     
