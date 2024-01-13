@@ -6,6 +6,7 @@ package forme;
 
 import controller.Controller;
 import java.util.List;
+import javax.swing.JOptionPane;
 import model.Nastavnik;
 
 /**
@@ -36,6 +37,7 @@ public class PrikazNastavnikaForma extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblNastavnik = new javax.swing.JTable();
+        btnDetalji = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,6 +54,13 @@ public class PrikazNastavnikaForma extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblNastavnik);
 
+        btnDetalji.setText("Detalji");
+        btnDetalji.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDetaljiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -60,17 +69,38 @@ public class PrikazNastavnikaForma extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDetalji)
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDetalji)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnDetaljiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDetaljiActionPerformed
+        int selektovaniRed = tblNastavnik.getSelectedRow();
+        if(selektovaniRed == -1) {
+            JOptionPane.showMessageDialog(this, "Niste selektovali nastavnika!", "Greska", JOptionPane.ERROR_MESSAGE);
+            return;
+        }else {
+            ModelTabeleNastavnik mtn = (ModelTabeleNastavnik) tblNastavnik.getModel();
+            List<Nastavnik> nastavnici = mtn.getLista();
+            Nastavnik n = nastavnici.get(selektovaniRed);
+            Controller.setOdabraniNastavnik(n);
+            DetaljiNastavnikForma dnf = new DetaljiNastavnikForma(this);
+            dnf.setVisible(true);
+        }
+    }//GEN-LAST:event_btnDetaljiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -108,7 +138,14 @@ public class PrikazNastavnikaForma extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDetalji;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblNastavnik;
     // End of variables declaration//GEN-END:variables
+
+    void osveziTabelu() {
+        List<Nastavnik> lista = Controller.getInstance().vratiNastavnike();
+        ModelTabeleNastavnik mtn = new ModelTabeleNastavnik(lista);
+        tblNastavnik.setModel(mtn);
+    }
 }

@@ -17,6 +17,8 @@ import model.Zvanje;
 public class Controller {
     private static Controller instance;
     private DBBroker dbb;
+    
+    private static Nastavnik odabraniNastavnik = null;
 
     public static Controller getInstance() {
         if(instance == null) { 
@@ -40,6 +42,21 @@ public class Controller {
     public List<Nastavnik> vratiNastavnike() {
         return dbb.vratiNastavnike();
     }
+
+    public static Nastavnik getOdabraniNastavnik() {
+        return odabraniNastavnik;
+    }
+
+    public static void setOdabraniNastavnik(Nastavnik odabraniNastavnik) {
+        Controller.odabraniNastavnik = odabraniNastavnik;
+    }
+
+    public boolean obrisiNastavnika(int id) throws SQLException {
+        return dbb.obrisiNastavnika(id);
+    }
+
+    
+    
     
     
 }

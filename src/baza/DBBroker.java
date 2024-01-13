@@ -69,11 +69,11 @@ public class DBBroker {
                 
                 Zvanje z = new Zvanje(idZvanja, nazivZvanja);
                 
-                
+                int id = rs.getInt("n.id");
                 String ime = rs.getString("n.ime");
                 String prezime = rs.getString("n.prezime");
                 
-                Nastavnik n = new Nastavnik(-1, ime, prezime, z);
+                Nastavnik n = new Nastavnik(id, ime, prezime, z);
                 lista.add(n);
             }
             
@@ -81,6 +81,23 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return lista;
+    }
+
+    public boolean obrisiNastavnika(int id) throws SQLException {
+        String upit = "DELETE FROM nastavnik WHERE ID = ?";
+        
+        try {
+            PreparedStatement ps = Konekcija.getInstance().getConnection().prepareStatement(upit);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            
+            Konekcija.getInstance().getConnection().commit();
+            return true;
+        } catch (SQLException ex) {
+            Konekcija.getInstance().getConnection().rollback();
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
     
 }
