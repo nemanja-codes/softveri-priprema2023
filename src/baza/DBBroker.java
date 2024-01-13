@@ -10,6 +10,7 @@ import model.Zvanje;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Nastavnik;
 
 /**
  *
@@ -54,6 +55,32 @@ public class DBBroker {
             Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    public List<Nastavnik> vratiNastavnike() {
+        List<Nastavnik> lista = new ArrayList<>();
+        String upit = "SELECT * FROM nastavnik n JOIN zvanje z ON n.zvanje_id = z.id ORDER BY z.naziv ASC";
+        try {
+            Statement st = Konekcija.getInstance().getConnection().createStatement();
+            ResultSet rs = st.executeQuery(upit);
+            while(rs.next()) {
+                int idZvanja = rs.getInt("z.id");
+                String nazivZvanja = rs.getString("z.naziv");
+                
+                Zvanje z = new Zvanje(idZvanja, nazivZvanja);
+                
+                
+                String ime = rs.getString("n.ime");
+                String prezime = rs.getString("n.prezime");
+                
+                Nastavnik n = new Nastavnik(-1, ime, prezime, z);
+                lista.add(n);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DBBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lista;
     }
     
 }

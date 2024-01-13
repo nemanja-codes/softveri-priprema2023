@@ -5,7 +5,10 @@
 package forme;
 
 import controller.Controller;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import model.Zvanje;
 
@@ -104,31 +107,34 @@ public class UnosNastavnikaForma extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSacuvajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajActionPerformed
-        String ime = txtIme.getText();
-        String prezime = txtPrezime.getText();
-        Zvanje zvanje = (Zvanje) cmbZvanje.getSelectedItem();
-        
-        if(ime == null  || ime.isEmpty()  || prezime == null || prezime.isEmpty() || zvanje == null) {
-            JOptionPane.showMessageDialog(this, "Sva polju su obavezna!", "Greska", JOptionPane.ERROR_MESSAGE);
-            return;
+        try {
+            String ime = txtIme.getText();
+            String prezime = txtPrezime.getText();
+            Zvanje zvanje = (Zvanje) cmbZvanje.getSelectedItem();
+            
+            if(ime == null  || ime.isEmpty()  || prezime == null || prezime.isEmpty() || zvanje == null) {
+                JOptionPane.showMessageDialog(this, "Sva polju su obavezna!", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(ime.length() > 100 || prezime.length() > 100) {
+                JOptionPane.showMessageDialog(this, "Predugacko ime ili prezime", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            //[A-Za-z]+
+            if(!ime.matches("[A-Za-z]+") || !prezime.matches("[A-Za-z]+")) {
+                JOptionPane.showMessageDialog(this, "Nisu svi karakteri slova u imenu ili prezimenu!", "Greska", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            boolean uspesno = Controller.getInstance().unesiNastavnika(ime, prezime, zvanje);
+            if(uspesno) {
+                JOptionPane.showMessageDialog(this, "Uspesno sacuvano!", "Uspeh", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Greska pri cuvanju!", "Greska", JOptionPane.ERROR_MESSAGE);
+            }} catch (SQLException ex) {
+            Logger.getLogger(UnosNastavnikaForma.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        if(ime.length() > 100 || prezime.length() > 100) {
-            JOptionPane.showMessageDialog(this, "Predugacko ime ili prezime", "Greska", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-       //[A-Za-z]+
-       if(!ime.matches("[A-Za-z]+") || !prezime.matches("[A-Za-z]+")) {
-           JOptionPane.showMessageDialog(this, "Nisu svi karakteri slova u imenu ili prezimenu!", "Greska", JOptionPane.ERROR_MESSAGE);
-            return;
-       }
-       
-       boolean uspesno = Controller.getInstance().unesiNastavnika(ime, prezime, zvanje);
-       if(uspesno) {
-           JOptionPane.showMessageDialog(this, "Uspesno sacuvano!", "Uspeh", JOptionPane.INFORMATION_MESSAGE);
-       } else {
-           JOptionPane.showMessageDialog(this, "Greska pri cuvanju!", "Greska", JOptionPane.ERROR_MESSAGE);
-       }
        
        
         

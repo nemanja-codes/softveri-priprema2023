@@ -5,7 +5,9 @@
 package controller;
 
 import baza.DBBroker;
+import java.sql.SQLException;
 import java.util.List;
+import model.Nastavnik;
 import model.Zvanje;
 
 /**
@@ -31,8 +33,12 @@ public class Controller {
         return dbb.vratiZvanja();
     }
 
-    public boolean unesiNastavnika(String ime, String prezime, Zvanje zvanje) {
+    public boolean unesiNastavnika(String ime, String prezime, Zvanje zvanje) throws SQLException {
         return dbb.unesiNastavnika(ime, prezime, zvanje);
+    }
+
+    public List<Nastavnik> vratiNastavnike() {
+        return dbb.vratiNastavnike();
     }
     
     
